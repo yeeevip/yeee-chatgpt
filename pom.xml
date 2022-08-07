@@ -5,48 +5,48 @@
     <parent>
         <groupId>vip.yeee.memo</groupId>
         <artifactId>memo-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>3.2.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
-	<artifactId>yeee-manage</artifactId>
+    <groupId>vip.yeee.app</groupId>
+	<artifactId>yeee-chatgpt</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>yeee-chatgpt-common</module>
+        <module>yeee-chatgpt-bootstrap</module>
+    </modules>
 
     <dependencies>
         <dependency>
             <groupId>vip.yeee.memo</groupId>
-            <artifactId>common-model</artifactId>
+            <artifactId>base-model</artifactId>
         </dependency>
         <dependency>
             <groupId>vip.yeee.memo</groupId>
-            <artifactId>common-util</artifactId>
+            <artifactId>base-util</artifactId>
         </dependency>
         <dependency>
             <groupId>vip.yeee.memo</groupId>
-            <artifactId>common-web</artifactId>
+            <artifactId>base-web</artifactId>
         </dependency>
         <dependency>
             <groupId>vip.yeee.memo</groupId>
-            <artifactId>common-security</artifactId>
+            <artifactId>common-httpclient-okhttp</artifactId>
         </dependency>
         <dependency>
             <groupId>vip.yeee.memo</groupId>
-            <artifactId>common-mybatis-plus</artifactId>
+            <artifactId>base-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alicp.jetcache</groupId>
+            <artifactId>jetcache-starter-redis-lettuce</artifactId>
         </dependency>
         <dependency>
             <groupId>vip.yeee.memo</groupId>
-            <artifactId>common-swagger</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-mapstruct-binding</artifactId>
+            <artifactId>base-swagger</artifactId>
         </dependency>
     </dependencies>
 

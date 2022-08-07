@@ -1,0 +1,37 @@
+spring:
+  redis:
+    database: 1
+    host: 127.0.0.1
+    password: yeee
+    port: 6379
+    timeout: 10000
+yeee:
+  swagger:
+    enable: true
+    title: yeee-chatgpt
+    description: yeee-chatgpt
+    contact-name: yeee
+    version: 1.0
+  okhttp:
+    connect-timeout: 20000
+    read-timeout: 30000
+  wx:
+    ma:
+      use-redis: true
+      redis-config:
+        host: ${spring.redis.host}
+        port: ${spring.redis.port}
+        password: ${spring.redis.password}
+        timeout: 10000
+      configs:
+        - appId: XXXXXXXXXXXXXXXX
+          secret: XXXXXXXXXXXXXXXX
+          token:
+          app-type: 10
+  lexicon:
+    sensitive:
+      path: /plugins/lexicon/lex-sensitive.lex
+  openai:
+    chat:
+      key:
+      host:
