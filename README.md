@@ -7,7 +7,12 @@
 
 ## 免费体验
 
-![](https://oos.yeee.vip/yeee-blog-web/qrcode_for_gh_472a7acc3579_258.jpg)
+### 程序预览
+
+![程序预览](doc/chatgpt_preview.png)
+
+![](doc/yeee_wp.jpg)
+
 公众号：一页一    ，回复 weso 获取小程序码
 
 ## 快速开始
