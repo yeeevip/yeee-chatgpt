@@ -15,7 +15,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>yeee-chatgpt-common</module>
+        <module>yeee-app-common</module>
+        <module>yeee-chatgpt-client</module>
         <module>yeee-chatgpt-bootstrap</module>
     </modules>
 

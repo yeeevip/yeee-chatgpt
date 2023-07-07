@@ -9,9 +9,9 @@
 
 ### 程序预览
 
-![程序预览](doc/chatgpt_preview.png)
+![](doc/chatgpt/chatgpt_preview.png)
 
-![](doc/yeee_wp.jpg)
+![](doc/chatgpt/yeee_wp.jpg)
 
 公众号：一页一    ，回复 weso 获取小程序码
 
@@ -32,7 +32,7 @@ yeee-chatgpt
     ├── weso-chatgpt -- 客户端页面｜vue
 ├── yeee-chatgpt-bootstrap -- 主启动工程
 ├── yeee-chatgpt-client -- ChatGPT客户端服务
-├── yeee-chatgpt-common -- 公共模块
+├── yeee-app-common -- 公共模块
 ```
 
 ### 本地开发 运行
@@ -43,14 +43,16 @@ yeee-chatgpt
 - redis
 
 ```
-# 下载[通用web脚手架]yeee-memo
+# 下载yeee-memo工程
 git clone https://github.com/yeeevip/yeee-memo.git
 
+# 打包[通用JavaWeb脚手架]memo-parent
 cd memo-parent && mvn clean install
 
-# 下载项目
+# 下载chatgpt项目
 git clone https://github.com/yeeevip/yeee-chatgpt.git
 
+# 修改配置
 cd yeee-chatgpt-bootstrap/src/main/resources/application-test.yml  修改  openai.chat.[key] | openai.chat.[host]
 
 # 运行ChatGPT服务
