@@ -5,7 +5,7 @@ import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import vip.yeee.memo.base.redis.constant.CacheKeysConstant;
+import vip.yeee.memo.base.redis.constant.RedisConstant;
 import vip.yeee.memo.base.util.IpAddressUtil;
 
 import javax.annotation.Resource;
@@ -25,7 +25,7 @@ public class CommonService {
 
     @Cached(cacheType = CacheType.LOCAL, localExpire = 5 * 60)
     public String getCachedAddressByIp(String ip) {
-        String key = CacheKeysConstant.VALUE_KEY + "ipaddr:" + ip;
+        String key = RedisConstant.KEY_PREFIX_VALUE + "ipaddr:" + ip;
         String value = stringRedisTemplate.opsForValue().get(key);
         if (StrUtil.isNotBlank(value)) {
             return value;
