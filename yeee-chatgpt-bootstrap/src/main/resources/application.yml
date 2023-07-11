@@ -6,7 +6,7 @@ spring:
   application:
     name: yeee-chatgpt
   profiles:
-    active: test
+    active: dev
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
