@@ -11,7 +11,6 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.sse.EventSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import vip.yeee.app.chatgpt.client.constant.ChatGptConstant;
 import vip.yeee.app.chatgpt.client.domain.local.ChatLocalRepository;
@@ -22,7 +21,7 @@ import vip.yeee.app.chatgpt.client.model.ChatMessage2;
 import vip.yeee.app.chatgpt.client.model.ChatParams;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
 import vip.yeee.app.chatgpt.client.properties.OpenaiApiProperties;
-import vip.yeee.app.common.kit.CheckRepeatKit;
+import vip.yeee.app.common.service.CheckRepeatService;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -43,7 +42,7 @@ public class ChatService {
     @Resource
     private ChatRedisRepository chatRedisRepository;
     @Resource
-    private CheckRepeatKit checkRepeatKit;
+    private CheckRepeatService checkRepeatService;
 
     // 构建请求头
     public Map<String, String> headers() {
@@ -96,7 +95,7 @@ public class ChatService {
             return;
         }
 
-        boolean canDo = checkRepeatKit.canRepeatDoSendMsg(uid, 8);
+        boolean canDo = checkRepeatService.canRepeatDoSendMsg(uid, 8);
         if (!canDo) {
             ChatAppNoticeKit.sendQuesFastMsg(listener);
             return;

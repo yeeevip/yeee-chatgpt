@@ -1,30 +1,30 @@
-package vip.yeee.app.common.kit;
+package vip.yeee.app.common.service;
 
 import cn.hutool.core.date.DateUtil;
 import org.springframework.stereotype.Component;
-import vip.yeee.memo.base.redis.kit.RedisKit;
+import vip.yeee.memo.base.redis.kit.CheckRepeatKit;
 
 import javax.annotation.Resource;
 import java.util.Date;
 
 @Component
-public class CheckRepeatKit {
+public class CheckRepeatService {
 
     @Resource
-    private RedisKit redisKit;
+    private CheckRepeatKit checkRepeatKit;
 
     public boolean canRepeatScheOpr(long s) {
         String key = "scheOpr:" + DateUtil.format(new Date(), "yyyy-MM-dd HH:mm");
-        return redisKit.canRepeatOpr(key, s);
+        return checkRepeatKit.canRepeatOpr(key, s);
     }
 
     public boolean canRepeatWishUpdate(Long wishId, int s) {
         String key = "wishUpdate:" + wishId;
-        return redisKit.canRepeatOpr(key, s);
+        return checkRepeatKit.canRepeatOpr(key, s);
     }
 
     public boolean canRepeatDoSendMsg(String uid, int s) {
         String key = "doSendMsg:" + uid;
-        return redisKit.canRepeatOpr(key, s);
+        return checkRepeatKit.canRepeatOpr(key, s);
     }
 }
