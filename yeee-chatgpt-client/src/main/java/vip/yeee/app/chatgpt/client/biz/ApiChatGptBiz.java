@@ -12,8 +12,8 @@ import vip.yeee.app.chatgpt.client.listener.ChatAppWsContext;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
 import vip.yeee.app.chatgpt.client.service.ChatService;
 import vip.yeee.app.common.service.CommonService;
-import vip.yeee.app.common.utils.HttpRequestUtils;
 import vip.yeee.memo.base.model.rest.CommonResult;
+import vip.yeee.memo.base.web.utils.HttpRequestUtils;
 import vip.yeee.memo.base.web.utils.SpringContextUtils;
 
 import javax.annotation.Resource;
