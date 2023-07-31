@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class ChatAppNoticeKit {
 
     public static void sendUseLimitMsg(WsEventSourceListener listener, Integer count) {
-        String msg = "你好[今日]免费次数已用完，请明日再来吧~~~\n\nTip：请在【手机端】点击右上角···[重新进入小程序]试试\n\n如需紧急使用，请直接联系邮箱wwwyeeevip@gmail.com";
+        String msg = "你好[今日]免费次数已用完，请明日再来吧~~~\n\nTip：请在【手机端】点击右上角···[重新进入小程序]试试\n\n反馈建议QQ:1324459373";
         Iterator<Word> it;
         it = ADictionaryExtra.engine.parse(msg);
         if(IterUtil.isNotEmpty(it)) {

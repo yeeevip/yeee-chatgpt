@@ -1,5 +1,5 @@
 <template>
-	<view class="bg">
+	<view class="bg" @touchstart="handleTouchStart">
 		<image src="" mode="scaleToFill" class="bg-img"></image>
 <!-- 		<view class="advertising">
 			<ad unit-id="adunit-94ed6bcc5bb80d7f"></ad>
@@ -104,10 +104,10 @@ export default {
       msg: "",
       ws: null,
       messages: [],
-      // baseHttpAddr: 'https://www.yeee.vip',
-      baseHttpAddr: 'http://127.0.0.1:8801',
-      // baseWsAddr: 'wss://www.yeee.vip',
-      baseWsAddr: 'ws://127.0.0.1:8801',
+      baseHttpAddr: 'https://www.yeee.vip',
+      // baseHttpAddr: 'http://127.0.0.1:8801',
+      baseWsAddr: 'wss://www.yeee.vip',
+      // baseWsAddr: 'ws://127.0.0.1:8801',
       chatId: null,
       isWx: true,
       minHeight: 100, // 文本输入框最小高度
@@ -115,7 +115,8 @@ export default {
       bottomVal: "",
       msgMaxWidth: '550rpx',
       utoken: '',
-      isMobile: true
+      isMobile: true,
+	  isScrolling: false // 滑动状态
     }
   },
   computed: {
@@ -300,13 +301,15 @@ export default {
             }
             vm.isRequesting = false
             vm.msgList[i].output = vm.msgList[i].output + msgRecv.msg
-            vm.$nextTick(() => {
-              // vm.intoindex = "text" + (vm.msgList.length - 1)
-              uni.pageScrollTo({
-                scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
-                duration: 0    //滚动动画的时长，默认300ms，单位 ms
-              });
-            });
+			if (!vm.isScrolling) {
+				vm.$nextTick(() => {
+				  // vm.intoindex = "text" + (vm.msgList.length - 1)
+				  uni.pageScrollTo({
+				    scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
+				    duration: 0    //滚动动画的时长，默认300ms，单位 ms
+				  });
+				});
+			}
           }
         })
         if (!found) {
@@ -327,10 +330,12 @@ export default {
           vm.msgLoad = false
           vm.$nextTick(() => {
             // vm.intoindex = "text" + (vm.msgList.length - 1)
-            uni.pageScrollTo({
-              scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
-              duration: 0    //滚动动画的时长，默认300ms，单位 ms
-            });
+			if (!this.isScrolling) {
+				uni.pageScrollTo({
+				  scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
+				  duration: 0    //滚动动画的时长，默认300ms，单位 ms
+				});
+			}
           });
         }
 
@@ -400,6 +405,7 @@ export default {
     toSendMsg() {
       const vm = this;
       const that = this;
+	  vm.isScrolling = false
       // 消息为空不做任何操作
       if (this.msg == "") {
         return;
@@ -492,6 +498,7 @@ export default {
     inputBindFocus(e) {
       // isScroll=false;
       this.bottomVal = e.detail.height + 'px'
+	  vm.isScrolling = false
     },
     inputBindBlur() {
       // isScroll=true;
@@ -500,7 +507,7 @@ export default {
     remindWatchAdGainCount() {
       var vm = this;
       uni.showModal({
-        content: '你的免费次数不足，观看广告即可获得免费次数！',
+        content: '你的免费次数不足，观看广告即可获得免费次数！反馈建议QQ:1324459373',
         confirmText: '去观看',
         success: (res) => {
           if (res.confirm && vm.isMobile) {
@@ -510,7 +517,10 @@ export default {
           }
         }
       });
-    }
+    },
+	handleTouchStart () {
+		this.isScrolling = true
+	}
   }
 }
 </script>

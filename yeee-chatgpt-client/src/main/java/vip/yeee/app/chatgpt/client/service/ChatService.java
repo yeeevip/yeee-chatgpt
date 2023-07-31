@@ -72,26 +72,9 @@ public class ChatService {
             return;
         }
 
-        Integer count = chatRedisRepository.getULimitCount();
         String limitUserKey = StrUtil.isNotBlank(chatRedisRepository.getUserOpenIdCache(uid)) ? chatRedisRepository.getUserOpenIdCache(uid) : uid;
-        if (count != null && (StrUtil.isBlank(chatRedisRepository.getULimitExclude())
-                || Arrays.stream(chatRedisRepository.getULimitExclude().split(",")).noneMatch(ex -> ex.equals(uid) || ex.equals(limitUserKey)))
-                && Optional.ofNullable(chatRedisRepository.getULimitCountCache(limitUserKey)).orElse(0) >= count) {
-            ChatAppNoticeKit.sendUseLimitMsg(listener, count);
-            return;
-        }
-        String temp = msg.toLowerCase().replaceAll(chatRedisRepository.getReplaceRegex(), "");
-        String presetMsg = chatRedisRepository.getPresetAnswers().get(temp);
-        if (StrUtil.isNotBlank(presetMsg)) {
-            ChatAppNoticeKit.sendPresetMsg(listener, presetMsg);
-            return;
-        }
-        if (chatRedisRepository.getProhibitKeyword().stream().anyMatch(key -> StrUtil.contains(temp, key))) {
-            ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
-            return;
-        }
-        if (ChatLocalRepository.containSensWord(temp)) {
-            ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
+
+        if (!this.checkLimit(uid, msg, limitUserKey, listener)) {
             return;
         }
 
@@ -125,6 +108,34 @@ public class ChatService {
         EventSource eventSource = openaiApiService.chatCompletions(headers(), params, listener);
         listener.setEventSource(eventSource);
         ChatAppWsContext.setUserRecentESL(chatId, uid, listener);
+    }
+
+    private boolean checkLimit(String uid, String msg, String limitUserKey, WsEventSourceListener listener) {
+        Integer count = chatRedisRepository.getULimitCount();
+        boolean limitExclude = true;
+        if (count != null && (StrUtil.isBlank(chatRedisRepository.getULimitExclude())
+                || (limitExclude = Arrays.stream(chatRedisRepository.getULimitExclude().split(",")).noneMatch(ex -> ex.equals(uid) || ex.equals(limitUserKey))))
+                && Optional.ofNullable(chatRedisRepository.getULimitCountCache(limitUserKey)).orElse(0) >= count) {
+            ChatAppNoticeKit.sendUseLimitMsg(listener, count);
+            return false;
+        }
+        if (limitExclude) {
+            String temp = msg.toLowerCase().replaceAll(chatRedisRepository.getReplaceRegex(), "");
+            String presetMsg = chatRedisRepository.getPresetAnswers().get(temp);
+            if (StrUtil.isNotBlank(presetMsg)) {
+                ChatAppNoticeKit.sendPresetMsg(listener, presetMsg);
+                return false;
+            }
+            if (chatRedisRepository.getProhibitKeyword().stream().anyMatch(key -> StrUtil.contains(temp, key))) {
+                ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
+                return false;
+            }
+            if (ChatLocalRepository.containSensWord(temp)) {
+                ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean handleAdminRequest(String msg, WsEventSourceListener listener) {
