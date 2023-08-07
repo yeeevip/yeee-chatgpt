@@ -86,6 +86,9 @@ public class WsEventSourceListener extends AbstractStreamListener {
         Message msg = new Message();
         msg.setMsgId(msgId);
         msg.setKind("chat");
+        if (response.contains("context_length_exceeded")) {
+            ChatLocalRepository.getChatContext(this.chatId).clear();
+        }
         if (response.contains("Rate limit reached")) {
             msg.setMsg("\n当前请求人数太多，请10s后重试！！！");
         } else {
