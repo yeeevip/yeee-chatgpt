@@ -12,8 +12,7 @@ import okhttp3.sse.EventSource;
 import vip.yeee.app.chatgpt.client.domain.local.ChatLocalRepository;
 import vip.yeee.app.chatgpt.client.model.ChatMessage2;
 
-import javax.websocket.Session;
-import java.io.IOException;
+import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -79,7 +78,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
 
     @Override
     public void onError(Throwable throwable, String response) {
-        Session session = ChatAppWsContext.getUserSession(chatId, uid);
+        Session session = ChatAppWsContext.getUserSession(this.chatId, uid);
         if (session == null || !session.isOpen()) {
             return;
         }
@@ -95,11 +94,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
             msg.setMsg("\n服务器开小差了，请5s后重试！！！");
         }
         msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
-        try {
-            session.getBasicRemote().sendText(JSON.toJSONString(msg));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        session.sendText(JSON.toJSONString(msg));
     }
 
     public void clear() {
@@ -130,11 +125,11 @@ public class WsEventSourceListener extends AbstractStreamListener {
                     if (session != null && session.isOpen()) {
                         message = messageLinkedBlockingQueue.take();
                         if (StrUtil.isNotBlank(errSendMsg.toString())) {
-                            session.getBasicRemote().sendText(errSendMsg.toString());
+                            session.sendText(errSendMsg.toString());
                             errSendMsg = new StringBuffer();
                             TimeUnit.MILLISECONDS.sleep(70);
                         }
-                        session.getBasicRemote().sendText(message);
+                        session.sendText(message);
                         TimeUnit.MILLISECONDS.sleep(70);
                     }
                 } catch (Exception e) {

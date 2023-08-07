@@ -498,7 +498,7 @@ export default {
     inputBindFocus(e) {
       // isScroll=false;
       this.bottomVal = e.detail.height + 'px'
-	  vm.isScrolling = false
+	  this.isScrolling = false
     },
     inputBindBlur() {
       // isScroll=true;

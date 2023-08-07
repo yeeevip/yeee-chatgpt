@@ -3,14 +3,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vip.yeee.app.chatgpt.client.biz.ApiChatGptBiz;
+import vip.yeee.memo.common.websocket.netty.annotation.*;
+import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 
-import javax.websocket.*;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
+import vip.yeee.memo.common.websocket.netty.annotation.PathParam;
 import java.io.IOException;
 @Slf4j
 @Component
-@ServerEndpoint("/ws/airobot/{chatId}/{token}")
+@ServerEndpoint(path = "/ws/airobot/{chatId}/{token}", port = "8802")
 public class ChatAppWebSocket {
 
     private Session session;

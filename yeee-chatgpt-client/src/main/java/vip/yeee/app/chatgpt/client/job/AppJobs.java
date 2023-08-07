@@ -15,7 +15,7 @@ import vip.yeee.app.chatgpt.client.domain.local.ChatLocalRepository;
 import vip.yeee.app.chatgpt.client.listener.AbstractStreamListener;
 import vip.yeee.app.chatgpt.client.listener.ChatAppWsContext;
 
-import javax.websocket.Session;
+import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +49,7 @@ public class AppJobs {
                 msg.setKind("heart");
                 msg.setMsg("");
                 msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
-                session.getBasicRemote().sendText(JSON.toJSONString(msg));
+                session.sendText(JSON.toJSONString(msg));
             } catch (Exception e) {
                 log.error("【Chat任务】- 定时session心跳，失败", e);
             }

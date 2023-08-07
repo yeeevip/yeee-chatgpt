@@ -17,7 +17,7 @@ import vip.yeee.memo.base.web.utils.HttpRequestUtils;
 import vip.yeee.memo.base.web.utils.SpringContextUtils;
 
 import javax.annotation.Resource;
-import javax.websocket.Session;
+import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,17 +104,15 @@ public class ApiChatGptBiz {
     }
 
     public void handleWsOnMessage(Session session, String msg) {
-        Map<String, Object> userProperties = session.getUserProperties();
-        String chatId = (String) userProperties.get(ChatGptConstant.ChatUserID.CHAT_ID);
-        String uid = (String) userProperties.get(ChatGptConstant.ChatUserID.U_ID);
+        String chatId = session.getAttribute(ChatGptConstant.ChatUserID.CHAT_ID);
+        String uid = session.getAttribute(ChatGptConstant.ChatUserID.U_ID);
         log.info("[连接ID:{}] 收到消息:{}", uid, msg);
         chatService.doWsChat(msg, chatId, uid);
     }
 
     public void handleWsOnClose(Session session) {
-        Map<String, Object> userProperties = session.getUserProperties();
-        String chatId = (String) userProperties.get(ChatGptConstant.ChatUserID.CHAT_ID);
-        String uid = (String) userProperties.get(ChatGptConstant.ChatUserID.U_ID);
+        String chatId = session.getAttribute(ChatGptConstant.ChatUserID.CHAT_ID);
+        String uid = session.getAttribute(ChatGptConstant.ChatUserID.U_ID);
         WsEventSourceListener sourceListener = ChatAppWsContext.getUserRecentESL(chatId, uid);
         if (sourceListener != null) {
             sourceListener.setCanReply(false);
@@ -129,9 +127,8 @@ public class ApiChatGptBiz {
     }
 
     public void handleWsOnError(Session session, Throwable error) {
-        Map<String, Object> userProperties = session.getUserProperties();
 //        String chatId = (String) userProperties.get(ChatGptConstant.ChatUserID.CHAT_ID);
-        String uid = (String) userProperties.get(ChatGptConstant.ChatUserID.U_ID);
+        String uid = session.getAttribute(ChatGptConstant.ChatUserID.U_ID);
 //        Session userSession = ChatAppWsContext.getUserSession(chatId, uid);
         log.error("[连接ID:{}] onError ", uid, error);
     }

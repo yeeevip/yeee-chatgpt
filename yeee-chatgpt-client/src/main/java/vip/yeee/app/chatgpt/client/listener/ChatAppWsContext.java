@@ -4,8 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import vip.yeee.app.chatgpt.client.constant.ChatGptConstant;
 
-import javax.websocket.Session;
-import java.io.IOException;
+import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 import java.util.List;
 import java.util.Map;
 
@@ -21,19 +20,15 @@ public class ChatAppWsContext {
     private final static Map<String, WsEventSourceListener> CUR_USER_RECENT_ESL_MAP = Maps.newHashMap();
 
     public static void setUserSession(String chatId, String uid, Session session) {
-        session.getUserProperties().put(ChatGptConstant.ChatUserID.CHAT_ID, chatId);
-        session.getUserProperties().put(ChatGptConstant.ChatUserID.U_ID, uid);
+        session.setAttribute(ChatGptConstant.ChatUserID.CHAT_ID, chatId);
+        session.setAttribute(ChatGptConstant.ChatUserID.U_ID, uid);
         CUR_USER_SESSION_MAP.put(chatId + ":" + uid, session);
     }
 
     public static void removeUserSession(String chatId, String uid) {
         Session userSession = getUserSession(chatId, uid);
         if (userSession != null) {
-            try {
-                userSession.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            userSession.close();
             CUR_USER_SESSION_MAP.remove(chatId + ":" + uid);
         }
     }
