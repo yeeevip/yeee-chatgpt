@@ -107,7 +107,7 @@ export default {
       baseHttpAddr: 'https://www.yeee.vip',
       // baseHttpAddr: 'http://127.0.0.1:8801',
       baseWsAddr: 'wss://www.yeee.vip',
-      // baseWsAddr: 'ws://127.0.0.1:8801',
+      // baseWsAddr: 'ws://127.0.0.1:8802',
       chatId: null,
       isWx: true,
       minHeight: 100, // 文本输入框最小高度
@@ -342,9 +342,17 @@ export default {
       })
       vm.ws.onOpen(function (e) {
         console.log('ws open')
+		setInterval(function() {
+			if (vm.ws) {
+				vm.ws.send({
+				  data: 'ping'
+				})
+			}
+		}, 5000);
       })
       vm.ws.onClose(function (e) {
         console.log('ws close')
+		vm.ws = null
       })
       vm.ws.onError(function () {
         vm.msgList[vm.msgList.length - 1].output = vm.errorMsg
@@ -385,6 +393,9 @@ export default {
           }, */
     sendMsg() {
       const vm = this;
+	  if (!vm.ws) {
+		  vm.wsInit(vm.utoken)
+	  }
       uni.request({
         url: vm.baseHttpAddr + '/api/airobot/chat/surplus/' + vm.utoken,
         method: 'POST',

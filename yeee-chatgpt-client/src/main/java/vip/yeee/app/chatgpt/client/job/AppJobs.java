@@ -34,7 +34,7 @@ public class AppJobs {
     @Value("${yeee.lexicon.sensitive.path}")
     private String sensitiveLexiconPath;
 
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
+//    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
     public void scheRefreshUserSession() {
         List<Session> sessionList = ChatAppWsContext.allUserSession();
 //        log.info("【Chat任务】- 定时session心跳，sessionSize = {}", sessionList.size());

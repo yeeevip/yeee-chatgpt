@@ -4,10 +4,12 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import vip.yeee.app.chatgpt.client.constant.ChatGptConstant;
 import vip.yeee.app.chatgpt.client.domain.redis.ChatRedisRepository;
+import vip.yeee.app.chatgpt.client.kit.ChatAppNoticeKit;
 import vip.yeee.app.chatgpt.client.listener.ChatAppWsContext;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
 import vip.yeee.app.chatgpt.client.service.ChatService;
@@ -78,7 +80,7 @@ public class ApiChatGptBiz {
         return res;
     }
 
-    public void handleWsOnOpen(Session session, String chatId, String token) throws IOException {
+    public void handleWsOnOpen(Session session, String chatId, String token) {
         ChatRedisRepository redisCache = (ChatRedisRepository)SpringContextUtils.getBean(ChatRedisRepository.class);
         String uid = redisCache.checkToken(token);
         if (StrUtil.isBlank(uid)) {
@@ -131,5 +133,26 @@ public class ApiChatGptBiz {
         String uid = session.getAttribute(ChatGptConstant.ChatUserID.U_ID);
 //        Session userSession = ChatAppWsContext.getUserSession(chatId, uid);
         log.error("[连接ID:{}] onError ", uid, error);
+    }
+
+    public void handleWsOnEvent(Session session, Object evt) {
+        String uid = session.getAttribute(ChatGptConstant.ChatUserID.U_ID);
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+            switch (idleStateEvent.state()) {
+                case READER_IDLE:
+                    log.info("[连接ID:{}] read idle ", uid);
+                    ChatAppNoticeKit.sendHeartTimeoutMsg(session);
+                    break;
+                case WRITER_IDLE:
+                    log.info("write idle");
+                    break;
+                case ALL_IDLE:
+                    log.info("all idle");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

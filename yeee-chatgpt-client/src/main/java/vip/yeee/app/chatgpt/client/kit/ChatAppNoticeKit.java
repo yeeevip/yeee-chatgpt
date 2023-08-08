@@ -1,10 +1,16 @@
 package vip.yeee.app.chatgpt.client.kit;
 
 import cn.hutool.core.collection.IterUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.tokenizer.Word;
+import com.alibaba.fastjson.JSON;
+import vip.yeee.app.chatgpt.client.listener.AbstractStreamListener;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
 import vip.yeee.app.common.config.ADictionaryExtra;
+import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -44,5 +50,15 @@ public class ChatAppNoticeKit {
                 listener.onMsg(false, "chat", it.next().getText());
             }
         }
+    }
+
+    public static void sendHeartTimeoutMsg(Session session) {
+        AbstractStreamListener.Message msg = new AbstractStreamListener.Message();
+        msg.setMsgId("");
+        msg.setKind("chat");
+        msg.setMsg("检测到您的网络不稳定，请重新进入小程序！！！\n\n反馈建议QQ:1324459373");
+        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+        session.sendText(JSON.toJSONString(msg));
+        session.close();
     }
 }
