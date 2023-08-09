@@ -112,14 +112,13 @@ public class ChatService {
 
     private boolean checkLimit(String uid, String msg, String limitUserKey, WsEventSourceListener listener) {
         Integer count = chatRedisRepository.getULimitCount();
-        boolean limitExclude = true;
-        if (count != null && (StrUtil.isBlank(chatRedisRepository.getULimitExclude())
-                || (limitExclude = Arrays.stream(chatRedisRepository.getULimitExclude().split(",")).noneMatch(ex -> ex.equals(uid) || ex.equals(limitUserKey))))
+        boolean needLimit = true;
+        if (count != null && (needLimit = !chatRedisRepository.getULimitExclude(uid, limitUserKey))
                 && Optional.ofNullable(chatRedisRepository.getULimitCountCache(limitUserKey)).orElse(0) >= count) {
             ChatAppNoticeKit.sendUseLimitMsg(listener, count);
             return false;
         }
-        if (limitExclude) {
+        if (needLimit) {
             String temp = msg.toLowerCase().replaceAll(chatRedisRepository.getReplaceRegex(), "");
             String presetMsg = chatRedisRepository.getPresetAnswers().get(temp);
             if (StrUtil.isNotBlank(presetMsg)) {

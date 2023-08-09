@@ -67,9 +67,9 @@ public class ChatRedisRepository {
     }
 
     @Cached(cacheType = CacheType.LOCAL, expire = 60)
-    public String getULimitExclude() {
+    public Boolean getULimitExclude(String uid, String limitUserKey) {
         String key = RedisKeys.CHATGPT_ULEXCLUDE;
-        return stringRedisTemplate.opsForValue().get(key);
+        return "1".equals(stringRedisTemplate.opsForValue().get(key + uid)) || "1".equals(stringRedisTemplate.opsForValue().get(key + limitUserKey));
     }
 
     @Cached(cacheType = CacheType.LOCAL, expire = 60)
@@ -115,8 +115,7 @@ public class ChatRedisRepository {
     }
 
     public Integer getUserSurplus(String ipAddr, String uKey) {
-        return Math.max((StrUtil.isBlank(this.getULimitExclude())
-                || Arrays.stream(this.getULimitExclude().split(",")).noneMatch(ex -> ex.equals(ipAddr) || ex.equals(uKey)))
+        return Math.max(!this.getULimitExclude(ipAddr, uKey)
                 ? this.getULimitCount() - this.getULimitCountCache(uKey) : 1000, 0);
     }
 
@@ -167,7 +166,7 @@ public class ChatRedisRepository {
         String CHATGPT_PREFIX = "YEEE:CHATGPT:";
         String CHATGPT_CONFIG_PREFIX = CHATGPT_PREFIX + "CONFIG:";
         String CHATGPT_U_DAY_LIMIT = CHATGPT_PREFIX + "ULIMIT";
-        String CHATGPT_ULEXCLUDE = CHATGPT_CONFIG_PREFIX + "ULEXCLUDE";
+        String CHATGPT_ULEXCLUDE = CHATGPT_CONFIG_PREFIX + "ULEXCLUDE:";
         String CHATGPT_APITOKEN = CHATGPT_CONFIG_PREFIX + "APITOKEN";
         String CHATGPT_APIHOST = CHATGPT_CONFIG_PREFIX + "APIHOST";
         String CHATGPT_LIMITCOUNT = CHATGPT_CONFIG_PREFIX + "LIMITCOUNT";
