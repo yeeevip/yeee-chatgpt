@@ -200,6 +200,6 @@ public abstract class AbstractStreamListener extends EventSourceListener {
         private String kind;
         private String msg;
         private String msgId;
-        private String createTime;
+//        private String createTime;
     }
 }

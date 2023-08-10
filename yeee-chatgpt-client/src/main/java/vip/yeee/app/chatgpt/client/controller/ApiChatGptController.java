@@ -3,6 +3,7 @@ package vip.yeee.app.chatgpt.client.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import vip.yeee.app.chatgpt.client.biz.ApiChatGptBiz;
+import vip.yeee.app.chatgpt.client.model.vo.UserAuthVo;
 import vip.yeee.memo.base.model.rest.CommonResult;
 
 import javax.annotation.Resource;
@@ -27,18 +28,18 @@ public class ApiChatGptController {
 //        return CommonResult.success(null);
 //    }
 
-    @PostMapping("/ad/onClose/{token}")
-    public CommonResult<Object> adOnClose(@PathVariable("token") String token) {
-        return CommonResult.success(apiChatGptBiz.adOnClose(token));
+    @PostMapping("/ad/onClose")
+    public CommonResult<Object> adOnClose() {
+        return CommonResult.success(apiChatGptBiz.adOnClose());
     }
 
-    @PostMapping("/chat/surplus/{token}")
-    public CommonResult<Object> chatSurplus(@PathVariable("token") String token) {
-        return CommonResult.success(apiChatGptBiz.chatSurplus(token));
+    @PostMapping("/chat/surplus")
+    public CommonResult<Object> chatSurplus() {
+        return CommonResult.success(apiChatGptBiz.chatSurplus());
     }
 
-    @GetMapping("/ws-auth")
-    public CommonResult<Object> wsAuth(String jscode) throws Exception {
+    @PostMapping("/ws-auth")
+    public CommonResult<UserAuthVo> wsAuth(String jscode) throws Exception {
         return CommonResult.success(apiChatGptBiz.wsAuth(jscode));
     }
 

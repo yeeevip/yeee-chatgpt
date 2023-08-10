@@ -26,6 +26,14 @@
             <artifactId>okhttp-sse</artifactId>
 <!--            <version>4.9.3</version>-->
         </dependency>
+        <dependency>
+            <groupId>vip.yeee.memo</groupId>
+            <artifactId>common-app-auth-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vip.yeee.memo</groupId>
+            <artifactId>common-app-auth-client</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

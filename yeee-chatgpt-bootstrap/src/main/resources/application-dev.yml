@@ -12,6 +12,12 @@ yeee:
     description: yeee-chatgpt
     contact-name: yeee
     version: 1.0
+  apiauth:
+    jwt:
+      secret: 111111
+      expire: 3600
+      exclude:
+        - /api/airobot/ws-auth
   okhttp:
     connect-timeout: 20000
     read-timeout: 30000

@@ -57,7 +57,16 @@ public class ChatAppNoticeKit {
         msg.setMsgId("");
         msg.setKind("chat");
         msg.setMsg("检测到您的网络不稳定，请重新进入小程序！！！\n\n反馈建议QQ:1324459373");
-        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+//        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+        session.sendText(JSON.toJSONString(msg));
+        session.close();
+    }
+
+    public static void sendAuthFailedMsg(Session session) {
+        AbstractStreamListener.Message msg = new AbstractStreamListener.Message();
+        msg.setMsgId("");
+        msg.setKind("chat");
+        msg.setMsg("身份认证过期，请重新进入小程序！！！");
         session.sendText(JSON.toJSONString(msg));
         session.close();
     }

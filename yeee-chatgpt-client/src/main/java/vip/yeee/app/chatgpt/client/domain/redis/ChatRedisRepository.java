@@ -1,12 +1,8 @@
 package vip.yeee.app.chatgpt.client.domain.redis;
 
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.symmetric.AES;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import com.google.common.collect.Maps;
@@ -14,7 +10,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -28,8 +23,6 @@ import java.util.concurrent.TimeUnit;
 public class ChatRedisRepository {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-    private static final AES aes = SecureUtil.aes(SecureUtil.md5("HFJAHSLKDFJDASKFJASKL").getBytes(StandardCharsets.UTF_8));
-    private static final TimedCache<String, String> userTokenMap = CacheUtil.newTimedCache(TimeUnit.HOURS.toMillis(1));
     private static final Map<String, String> userOpenIdMap = Maps.newConcurrentMap();
     public Integer getULimitCountCache(String uid) {
         String uLimitKey = RedisKeys.CHATGPT_U_DAY_LIMIT;
@@ -86,16 +79,6 @@ public class ChatRedisRepository {
             return val;
         }
         return null;
-    }
-
-    public String genTokenAndCache(String ipAddr) {
-        String token = aes.encryptHex(ipAddr);
-        userTokenMap.put(token, ipAddr);
-        return token;
-    }
-
-    public String checkToken(String token) {
-        return userTokenMap.get(token);
     }
 
     public void saveUserOpenIdCache(String uid, String openId) {

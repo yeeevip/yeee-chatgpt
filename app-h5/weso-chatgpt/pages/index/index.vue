@@ -169,8 +169,11 @@ export default {
           console.log('onClose event emit', res)
           if (res.isEnded) {
             uni.request({
-              url: vm.baseHttpAddr + '/api/airobot/ad/onClose/' + vm.utoken,
+              url: vm.baseHttpAddr + '/api/airobot/ad/onClose',
               method: 'POST',
+			  header: {
+				'Utoken': 'Bearer ' + vm.utoken
+			  },
               success: (res) => {
                 console.log('ad/onClose emit', res)
                 if (res.data.code == 200) {
@@ -217,13 +220,14 @@ export default {
 
         uni.request({
           url: vm.baseHttpAddr + '/api/airobot/ws-auth',
-          method: 'GET',
+          method: 'POST',
           success: (res) => {
             if (res.data.code == 200) {
-              vm.utoken = res.data.data.token
-              vm.wsInit(res.data.data.token)
-              vm.num = res.data.data.limitCount
-              if (res.data.data.limitCount) {
+			  let data = res.data.data
+              vm.utoken = data.accessToken
+              vm.wsInit(data.accessToken)
+              vm.num = data.limitCount
+              if (data.limitCount) {
                 if (vm.num === 1000) {
                   vm.maxlength = 2000
                 }
@@ -246,14 +250,15 @@ export default {
           success: function (loginRes) {
             uni.request({
               url: vm.baseHttpAddr + '/api/airobot/ws-auth?jscode=' + loginRes.code,
-              method: 'GET',
+              method: 'POST',
               success: (res) => {
                 if (res.data.code == 200) {
-                  vm.chatId = res.data.data.openid ? res.data.data.openid : uuid.v1()
-                  vm.utoken = res.data.data.token
-                  vm.wsInit(res.data.data.token)
-                  vm.num = res.data.data.limitCount
-                  if (res.data.data.limitCount) {
+				  let data = res.data.data
+                  vm.chatId = data.openid ? data.openid : uuid.v1()
+                  vm.utoken = data.accessToken
+                  vm.wsInit(data.accessToken)
+                  vm.num = data.limitCount
+                  if (data.limitCount) {
                     if (vm.num === 1000) {
                       vm.maxlength = 2000
                     }
@@ -280,11 +285,17 @@ export default {
         vm.ws.close()
       }
       vm.ws = uni.connectSocket({
-        url: vm.baseWsAddr + '/ws/airobot/' + vm.chatId + '/' + t,
+        url: vm.baseWsAddr + '/ws/airobot/' + vm.chatId,
+		header: {
+			'Utoken': 'Bearer ' + t
+		},
         complete: () => {
         }
       })
       vm.ws.onMessage(function (e) {
+		if (!vm.isJSONString(e.data)) {
+			return
+		}
         let msgRecv = JSON.parse(e.data)
         let found = false
         if (msgRecv.kind == 'heart') {
@@ -307,7 +318,7 @@ export default {
 				  uni.pageScrollTo({
 				    scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
 				    duration: 0    //滚动动画的时长，默认300ms，单位 ms
-				  });
+				  }); 
 				});
 			}
           }
@@ -397,8 +408,11 @@ export default {
 		  vm.wsInit(vm.utoken)
 	  }
       uni.request({
-        url: vm.baseHttpAddr + '/api/airobot/chat/surplus/' + vm.utoken,
+        url: vm.baseHttpAddr + '/api/airobot/chat/surplus',
         method: 'POST',
+		header: {
+			'Utoken': 'Bearer ' + vm.utoken
+		},
         success: (res) => {
           if (res.data.code == 200) {
             if (res.data.data.limitCount > 0) {
@@ -408,8 +422,14 @@ export default {
               this.remindWatchAdGainCount()
               return
             }
-          }
-          this.toSendMsg()
+			this.toSendMsg()
+          } else{
+			uni.showToast({
+				title: res.data.message,
+				icon: 'none',
+				duration: 2000
+			});
+		  }
         }
       })
     },
@@ -418,7 +438,7 @@ export default {
       const that = this;
 	  vm.isScrolling = false
       // 消息为空不做任何操作
-      if (this.msg == "") {
+      if (!this.msg || !this.msg.replaceAll(" ", "")) {
         return;
       }
       if (this.isRequesting) {
@@ -531,6 +551,14 @@ export default {
     },
 	handleTouchStart () {
 		this.isScrolling = true
+	},
+	isJSONString (str) {
+		try {
+			JSON.parse(str);
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
   }
 }

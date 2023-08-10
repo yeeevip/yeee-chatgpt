@@ -48,7 +48,7 @@ public class AppJobs {
                 msg.setMsgId("");
                 msg.setKind("heart");
                 msg.setMsg("");
-                msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+//                msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
                 session.sendText(JSON.toJSONString(msg));
             } catch (Exception e) {
                 log.error("【Chat任务】- 定时session心跳，失败", e);

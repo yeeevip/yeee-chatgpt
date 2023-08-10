@@ -1,4 +1,5 @@
 package vip.yeee.app.chatgpt.client.controller;
+import io.netty.handler.codec.http.HttpHeaders;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import vip.yeee.memo.common.websocket.netty.annotation.PathParam;
 import java.io.IOException;
 @Slf4j
 @Component
-@ServerEndpoint(path = "/ws/airobot/{chatId}/{token}", port = "8802", readerIdleTimeSeconds = "15")
+@ServerEndpoint(path = "/ws/airobot/{chatId}", port = "8802", readerIdleTimeSeconds = "15")
 public class ChatAppWebSocket {
 
     private static ApiChatGptBiz apiChatGptBiz = null;
@@ -24,8 +25,8 @@ public class ChatAppWebSocket {
     }
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("chatId") String chatId, @PathParam("token") String token) {
-        apiChatGptBiz.handleWsOnOpen(session, chatId, token);
+    public void onOpen(Session session, HttpHeaders headers, @PathParam("chatId") String chatId) {
+        apiChatGptBiz.handleWsOnOpen(session, headers, chatId);
     }
 
     @OnMessage

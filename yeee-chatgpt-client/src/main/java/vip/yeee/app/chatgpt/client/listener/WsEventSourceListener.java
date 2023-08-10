@@ -54,7 +54,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
             msg.setMsgId(msgId);
             msg.setKind(kind);
             msg.setMsg(message);
-            msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+//            msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
             this.messageLinkedBlockingQueue.put(JSON.toJSONString(msg));
             if (cache) {
                 // 写入缓存
@@ -93,7 +93,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
         } else {
             msg.setMsg("\n服务器开小差了，请5s后重试！！！");
         }
-        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+//        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
         session.sendText(JSON.toJSONString(msg));
     }
 
