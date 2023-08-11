@@ -10,6 +10,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import vip.yeee.app.chatgpt.client.constant.ChatGptConstant;
 import vip.yeee.app.chatgpt.client.domain.redis.ChatRedisRepository;
 import vip.yeee.app.chatgpt.client.kit.ChatAppNoticeKit;
@@ -95,13 +96,15 @@ public class ApiChatGptBiz {
         return authVo;
     }
 
-    public void handleWsOnOpen(Session session, HttpHeaders headers, String chatId) {
+    public void handleWsOnOpen(Session session, HttpHeaders headers, String chatId, MultiValueMap<String, String> reqParams) {
+        session.setSubprotocols("Utoken");
         ChatRedisRepository redisCache = (ChatRedisRepository)SpringContextUtils.getBean(ChatRedisRepository.class);
         ApiAuthedUser userVo;
         String token = null;
         try {
             token = headers.get(ApiAuthConstant.TOKEN);
-            if (StrUtil.isBlank(token) || StrUtil.isBlank(token = token.replace(ApiAuthConstant.JWT_TOKEN_PREFIX, ""))) {
+            if ((StrUtil.isBlank(token) && StrUtil.isBlank(token = reqParams.getFirst(ApiAuthConstant.TOKEN)))
+                    || StrUtil.isBlank(token = token.replace(ApiAuthConstant.JWT_TOKEN_PREFIX, ""))) {
                 throw new BizException("token null");
             }
             Claims claims = jwtClientKit.getTokenClaim(token);

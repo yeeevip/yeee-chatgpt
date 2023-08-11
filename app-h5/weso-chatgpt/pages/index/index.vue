@@ -284,34 +284,57 @@ export default {
       if (vm.ws) {
         vm.ws.close()
       }
-      vm.ws = uni.connectSocket({
-        url: vm.baseWsAddr + '/ws/airobot/' + vm.chatId,
+	  vm.ws = uni.connectSocket({
+		url: vm.baseWsAddr + '/ws/airobot/' + vm.chatId + (!vm.isWx ? '?Utoken=Bearer ' + t : ''),
 		header: {
 			'Utoken': 'Bearer ' + t
 		},
-        complete: () => {
-        }
-      })
-      vm.ws.onMessage(function (e) {
+		complete: () => {
+		}
+	  })
+	  vm.ws.onMessage(function (e) {
+		vm.handleWsOnMessage(vm, e)
+	  })
+	  vm.ws.onOpen(function (e) {
+		vm.handleWsOnOpen(vm, e)
+	  })
+	  vm.ws.onClose(function (e) {
+		vm.handleWsOnClose(vm, e)
+	  })
+	  vm.ws.onError(function () {
+		vm.handleWsOnError(vm)
+	  })
+    },
+	handleWsOnOpen (vm, e) {
+		console.log('ws open')
+		setInterval(function() {
+			if (vm.ws) {
+				vm.ws.send({
+				  data: 'ping'
+				})
+			}
+		}, 5000);
+	},
+	handleWsOnMessage (vm, e) {
 		if (!vm.isJSONString(e.data)) {
 			return
 		}
-        let msgRecv = JSON.parse(e.data)
-        let found = false
-        if (msgRecv.kind == 'heart') {
-          console.log("heart~~~~")
-          return
-        }
-        vm.msgList.forEach((m, i) => {
-          if (m.msgId === msgRecv.msgId) {
-            found = true
-            if (m.kind !== 'chat') {
-              vm.msgList[i].output = ''
-              m.kind = 'chat'
-              vm.num--
-            }
-            vm.isRequesting = false
-            vm.msgList[i].output = vm.msgList[i].output + msgRecv.msg
+		let msgRecv = JSON.parse(e.data)
+		let found = false
+		if (msgRecv.kind == 'heart') {
+		  console.log("heart~~~~")
+		  return
+		}
+		vm.msgList.forEach((m, i) => {
+		  if (m.msgId === msgRecv.msgId) {
+		    found = true
+		    if (m.kind !== 'chat') {
+		      vm.msgList[i].output = ''
+		      m.kind = 'chat'
+		      vm.num--
+		    }
+		    vm.isRequesting = false
+		    vm.msgList[i].output = vm.msgList[i].output + msgRecv.msg
 			if (!vm.isScrolling) {
 				vm.$nextTick(() => {
 				  // vm.intoindex = "text" + (vm.msgList.length - 1)
@@ -321,56 +344,44 @@ export default {
 				  }); 
 				});
 			}
-          }
-        })
-        if (!found) {
-          let text = msgRecv.msg
-          let msg = {
-            msgId: msgRecv.msgId,
-            output: text,
-            kind: msgRecv.kind
-          }
-          vm.msgList.push(msg)
-          if (msgRecv.kind === 'chat') {
-            vm.isRequesting = false;
-          }
-          vm.msgContent.push({
-            "role": '',
-            "content": text,
-          })
-          vm.msgLoad = false
-          vm.$nextTick(() => {
-            // vm.intoindex = "text" + (vm.msgList.length - 1)
-			if (!this.isScrolling) {
+		  }
+		})
+		if (!found) {
+		  let text = msgRecv.msg
+		  let msg = {
+		    msgId: msgRecv.msgId,
+		    output: text,
+		    kind: msgRecv.kind
+		  }
+		  vm.msgList.push(msg)
+		  if (msgRecv.kind === 'chat') {
+		    vm.isRequesting = false;
+		  }
+		  vm.msgContent.push({
+		    "role": '',
+		    "content": text,
+		  })
+		  vm.msgLoad = false
+		  vm.$nextTick(() => {
+		    // vm.intoindex = "text" + (vm.msgList.length - 1)
+			if (!vm.isScrolling) {
 				uni.pageScrollTo({
 				  scrollTop: 2000000,    //滚动到页面的目标位置（单位px）
 				  duration: 0    //滚动动画的时长，默认300ms，单位 ms
 				});
 			}
-          });
-        }
-
-      })
-      vm.ws.onOpen(function (e) {
-        console.log('ws open')
-		setInterval(function() {
-			if (vm.ws) {
-				vm.ws.send({
-				  data: 'ping'
-				})
-			}
-		}, 5000);
-      })
-      vm.ws.onClose(function (e) {
-        console.log('ws close')
+		  });
+		}
+	},
+	handleWsOnClose (vm, e) {
+		console.log('ws close')
 		vm.ws = null
-      })
-      vm.ws.onError(function () {
-        vm.msgList[vm.msgList.length - 1].output = vm.errorMsg
-        vm.isRequesting = false;
-        vm.msgLoad = false
-      })
-    },
+	},
+	handleWsOnError (vm) {
+		vm.msgList[vm.msgList.length - 1].output = vm.errorMsg
+		vm.isRequesting = false;
+		vm.msgLoad = false
+	},
     reconnectWs() {
       const vm = this
       vm.ws.closeSocket()

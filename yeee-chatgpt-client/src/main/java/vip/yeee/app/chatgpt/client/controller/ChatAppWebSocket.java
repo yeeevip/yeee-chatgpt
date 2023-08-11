@@ -3,6 +3,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import vip.yeee.app.chatgpt.client.biz.ApiChatGptBiz;
 import vip.yeee.memo.common.websocket.netty.annotation.*;
 import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
@@ -25,8 +26,8 @@ public class ChatAppWebSocket {
     }
 
     @OnOpen
-    public void onOpen(Session session, HttpHeaders headers, @PathParam("chatId") String chatId) {
-        apiChatGptBiz.handleWsOnOpen(session, headers, chatId);
+    public void onOpen(Session session, HttpHeaders headers, @PathParam("chatId") String chatId, @RequestParam MultiValueMap<String, String> reqParams) {
+        apiChatGptBiz.handleWsOnOpen(session, headers, chatId, reqParams);
     }
 
     @OnMessage
