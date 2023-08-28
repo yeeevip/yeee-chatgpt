@@ -9,9 +9,17 @@
 
 ### 程序预览
 
-![](doc/chatgpt/chatgpt_preview.png)
+- 微信小程序
 
-![](doc/chatgpt/yeee_wp.jpg)
+![微信小程序](doc/chatgpt/chatgpt_preview.png)
+
+- PC网页版
+
+![PC网页版](doc/chatgpt/chatgpt_preview2.png)
+
+- 体验地址
+
+![体验地址](doc/yeee/images/yeee_wp.jpg)
 
 公众号：一页一    ，回复 weso 获取小程序码
 
@@ -74,6 +82,6 @@ mvn clean install && java -jar -Dspring.profiles.active=test yeee-chatgpt-bootst
 
 | 微信群                             | QQ群                                                                           |
 |---------------------------------|-------------------------------------------------------------------------------|
-| ![作者微信](doc/images/yeee_wp.jpg) | ![](doc/images/yeee-memo-qq.jpg)                                              |
+| ![作者微信](doc/yeee/images/yeee_wp.jpg) | ![](doc/yeee/images/yeee-memo-qq.jpg)                                              |
 | 回复：加群，邀您加入群聊                    | <a href="https://qm.qq.com/q/oLSCm1Ksjm" target="_blank">点击加入QQ群：96305921</a> |
 
