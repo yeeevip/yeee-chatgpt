@@ -55,16 +55,16 @@ yeee-chatgpt
 git clone https://github.com/yeeevip/yeee-memo.git
 
 # 打包[通用JavaWeb脚手架]memo-parent
-cd memo-parent && mvn clean install
+cd yeee-memo/memo-parent && mvn clean install
 
 # 下载chatgpt项目
 git clone https://github.com/yeeevip/yeee-chatgpt.git
 
 # 修改配置
-cd yeee-chatgpt-bootstrap/src/main/resources/application-test.yml  修改  openai.chat.[key] | openai.chat.[host]
+cd yeee-chatgpt/yeee-chatgpt-bootstrap/src/main/resources/application-test.yml  修改  openai.chat.[key] | openai.chat.[host]
 
 # 运行ChatGPT服务
-mvn clean install && java -jar -Dspring.profiles.active=test yeee-chatgpt-bootstrap/target/yeee-chatgpt-bootstrap-1.0.0-SNAPSHOT.jar
+cd yeee-chatgpt && mvn clean install && java -jar -Dspring.profiles.active=test yeee-chatgpt-bootstrap/target/yeee-chatgpt-bootstrap-1.0.0-SNAPSHOT.jar
 
 # 运行客户端ui
 建议使用HbuilderX -> 导入app-h5/weso-chatgpt -> 编译运行在微信开发者工具/H5浏览器
@@ -72,7 +72,7 @@ mvn clean install && java -jar -Dspring.profiles.active=test yeee-chatgpt-bootst
 
 ## 其他说明
 
-1. 欢迎提交 [PR](https://www.yeee.vip)，注意对应提交对应 `blog-dev` 分支
+1. 欢迎提交 [PR](https://www.yeee.vip)
 
 2. 欢迎提交 [issue](https://gitee.com/yeeevip/yeee-blog/issues)，请写清楚遇到问题的原因、开发环境、复显步骤。
 
