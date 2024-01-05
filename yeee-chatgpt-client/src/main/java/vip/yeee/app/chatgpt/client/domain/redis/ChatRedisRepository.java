@@ -29,34 +29,34 @@ public class ChatRedisRepository {
         return Integer.parseInt(Optional.ofNullable(stringRedisTemplate.opsForHash().get(uLimitKey, uid)).orElse("0").toString());
     }
 
-    public void incrULimitCountCache(String uid) {
-        incrULimitCountCache(uid, 1L);
+    public void incrULimitCountCache(String uKey) {
+        incrULimitCountCache(uKey, 1L);
     }
 
-    public void incrULimitCountCache(String uid, long incr) {
+    public void incrULimitCountCache(String uKey, long incr) {
         String uLimitKey = RedisKeys.CHATGPT_U_DAY_LIMIT;
         boolean has = false;
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(uLimitKey))) {
             has = true;
         }
-        stringRedisTemplate.opsForHash().increment(uLimitKey, uid, incr);
+        stringRedisTemplate.opsForHash().increment(uLimitKey, uKey, incr);
         if (!has) {
             stringRedisTemplate.expire(uLimitKey, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.SECOND), TimeUnit.SECONDS);
         }
-        incrUserUsedCount(uid);
+        incrUserUsedCount(uKey);
     }
 
-    public void reSetULimitCountCache(String uid, String count) {
+    public void reSetULimitCountCache(String uKey, String count) {
         String uLimitKey = RedisKeys.CHATGPT_U_DAY_LIMIT;
         boolean has = false;
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(uLimitKey))) {
             has = true;
         }
-        stringRedisTemplate.opsForHash().put(uLimitKey, uid, count);
+        stringRedisTemplate.opsForHash().put(uLimitKey, uKey, count);
         if (!has) {
             stringRedisTemplate.expire(uLimitKey, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.SECOND), TimeUnit.SECONDS);
         }
-        incrUserUsedCount(uid);
+        incrUserUsedCount(uKey);
     }
 
     @Cached(cacheType = CacheType.LOCAL, expire = 60)
@@ -85,16 +85,17 @@ public class ChatRedisRepository {
         userOpenIdMap.put(uid, openId);
     }
 
-    public void incrUserUsedCount(String uid) {
-        stringRedisTemplate.opsForHash().increment(RedisKeys.CHATGPT_USER_DETAIL + uid, "usedCount", 1L);
+    public void incrUserUsedCount(String uKey) {
+        stringRedisTemplate.opsForHash().increment(RedisKeys.CHATGPT_USER_DETAIL + uKey, "usedCount", 1L);
     }
 
     public void recordUserDetail(String uid, String attr, String val) {
         stringRedisTemplate.opsForHash().put(RedisKeys.CHATGPT_USER_DETAIL + uid, attr, val);
     }
 
-    public String getUserOpenIdCache(String uid) {
-        return userOpenIdMap.get(uid);
+    public String getUserKey(String uid) {
+        String value = this.getUserOpenIdCache(uid);
+        return StrUtil.isNotBlank(value) ? value : uid;
     }
 
     public Integer getUserSurplus(String ipAddr, String uKey) {
@@ -143,6 +144,10 @@ public class ChatRedisRepository {
             return Integer.parseInt(val);
         }
         return 2;
+    }
+
+    private String getUserOpenIdCache(String uid) {
+        return userOpenIdMap.get(uid);
     }
 
     interface RedisKeys {

@@ -60,8 +60,8 @@ public class ApiChatGptBiz {
         ApiAuthedUser curUser = ApiSecurityContext.getCurUser();
         String uid = curUser.getUid();
         Integer incr = 3;
-        String limitUserKey = StrUtil.isNotBlank(chatRedisRepository.getUserOpenIdCache(uid)) ? chatRedisRepository.getUserOpenIdCache(uid) : uid;
-        chatRedisRepository.incrULimitCountCache(limitUserKey, incr * (-1L));
+        String uKey = chatRedisRepository.getUserKey(uid);
+        chatRedisRepository.incrULimitCountCache(uKey, incr * (-1L));
         HashMap<String, Object> res = Maps.newHashMap();
         res.put("incr", incr);
         return res;
@@ -71,7 +71,7 @@ public class ApiChatGptBiz {
         ApiAuthedUser curUser = ApiSecurityContext.getCurUser();
         String uid = curUser.getUid();
         Map<String, Object> res = Maps.newHashMap();
-        String uKey = StrUtil.isNotBlank(chatRedisRepository.getUserOpenIdCache(uid)) ? chatRedisRepository.getUserOpenIdCache(uid) : uid;
+        String uKey = chatRedisRepository.getUserKey(uid);
         res.put("limitCount", chatRedisRepository.getUserSurplus(uid, uKey));
         return res;
     }
@@ -117,7 +117,7 @@ public class ApiChatGptBiz {
 
         String uid = userVo.getUid();
 
-        String limitUserKey = StrUtil.isNotBlank(redisCache.getUserOpenIdCache(uid)) ? redisCache.getUserOpenIdCache(uid) : uid;
+        String limitUserKey = chatRedisRepository.getUserKey(uid);
         redisCache.recordUserDetail(limitUserKey, "ip", uid);
         CommonService commonService = (CommonService) SpringContextUtils.getBean(CommonService.class);
         redisCache.recordUserDetail(limitUserKey, "address", commonService.getCachedAddressByIp(uid));
@@ -153,7 +153,7 @@ public class ApiChatGptBiz {
         }
         ChatAppWsContext.removeUserSession(chatId, uid);
         ChatRedisRepository redisCache = (ChatRedisRepository)SpringContextUtils.getBean(ChatRedisRepository.class);
-        String uKey = StrUtil.isNotBlank(redisCache.getUserOpenIdCache(uid)) ? redisCache.getUserOpenIdCache(uid) : uid;
+        String uKey = chatRedisRepository.getUserKey(uid);
         Integer userSurplus = redisCache.getUserSurplus(uid, uKey);
         int onlineCount = ChatAppWsContext.allUserSession().size();
         String logStr = "[连接ID:{}{}{}] 断开连接, 剩余次数：{}，当前连接数：{}";
@@ -168,12 +168,14 @@ public class ApiChatGptBiz {
     }
 
     public void handleWsOnEvent(Session session, Object evt) {
+        String chatId = session.getAttribute(ChatGptConstant.ChatUserID.CHAT_ID);
         String uid = session.getAttribute(ChatGptConstant.ChatUserID.U_ID);
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             switch (idleStateEvent.state()) {
                 case READER_IDLE:
                     log.info("[连接ID:{}] read idle ", uid);
+                    ChatAppWsContext.removeUserSession(chatId, uid);
                     ChatAppNoticeKit.sendHeartTimeoutMsg(session);
                     break;
                 case WRITER_IDLE:

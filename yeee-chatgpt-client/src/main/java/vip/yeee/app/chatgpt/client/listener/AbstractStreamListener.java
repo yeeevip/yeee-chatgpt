@@ -27,6 +27,7 @@ public abstract class AbstractStreamListener extends EventSourceListener {
     private String gptRole = "";
     protected String chatId = "";
     protected String uid = "";
+    protected String uKey = "";
     protected Date startTime;
     protected Date firstRespTime;
     @Getter
@@ -165,6 +166,14 @@ public abstract class AbstractStreamListener extends EventSourceListener {
 
     public String getUid() {
         return uid;
+    }
+
+    public String getuKey() {
+        return uKey;
+    }
+
+    public void setuKey(String uKey) {
+        this.uKey = uKey;
     }
 
     public void setUid(String uid) {

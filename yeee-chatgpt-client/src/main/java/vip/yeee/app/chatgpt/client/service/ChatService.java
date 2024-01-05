@@ -66,15 +66,16 @@ public class ChatService {
     }
 
     public void doWsChat(String msg, String chatId, String uid) {
-        WsEventSourceListener listener = new WsEventSourceListener(chatId, uid, msg);
+
+        String uKey = chatRedisRepository.getUserKey(uid);
+
+        WsEventSourceListener listener = new WsEventSourceListener(chatId, uid, uKey, msg);
 
         if (this.handleAdminRequest(msg, listener)) {
             return;
         }
 
-        String limitUserKey = StrUtil.isNotBlank(chatRedisRepository.getUserOpenIdCache(uid)) ? chatRedisRepository.getUserOpenIdCache(uid) : uid;
-
-        if (!this.checkLimit(uid, msg, limitUserKey, listener)) {
+        if (!this.checkLimit(uid, msg, uKey, listener)) {
             return;
         }
 
@@ -89,7 +90,7 @@ public class ChatService {
         });
         listener.setFirstReceiveFunc(lt -> {
             log.info("【CHAT-GPT】- 首次响应");
-            chatRedisRepository.incrULimitCountCache(limitUserKey);
+            chatRedisRepository.incrULimitCountCache(uKey);
         });
         listener.setCloseFunc(lt -> {
             if (!lt.isHasDone()) {
@@ -110,11 +111,11 @@ public class ChatService {
         ChatAppWsContext.setUserRecentESL(chatId, uid, listener);
     }
 
-    private boolean checkLimit(String uid, String msg, String limitUserKey, WsEventSourceListener listener) {
+    private boolean checkLimit(String uid, String msg, String uKey, WsEventSourceListener listener) {
         Integer count = chatRedisRepository.getULimitCount();
         boolean needLimit = true;
-        if (count != null && (needLimit = !chatRedisRepository.getULimitExclude(uid, limitUserKey))
-                && Optional.ofNullable(chatRedisRepository.getULimitCountCache(limitUserKey)).orElse(0) >= count) {
+        if (count != null && (needLimit = !chatRedisRepository.getULimitExclude(uid, uKey))
+                && Optional.ofNullable(chatRedisRepository.getULimitCountCache(uKey)).orElse(0) >= count) {
             ChatAppNoticeKit.sendUseLimitMsg(listener, count);
             return false;
         }

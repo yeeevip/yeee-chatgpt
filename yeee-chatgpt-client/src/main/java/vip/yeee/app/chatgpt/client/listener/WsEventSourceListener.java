@@ -34,9 +34,10 @@ public class WsEventSourceListener extends AbstractStreamListener {
 
     private StringBuffer errSendMsg = new StringBuffer();
 
-    public WsEventSourceListener(String chatId, String uid, String question) {
+    public WsEventSourceListener(String chatId, String uid, String uKey, String question) {
         this.setChatId(chatId);
         this.setUid(uid);
+        this.setuKey(uKey);
         this.question = question;
         WsEventSourceListener sourceListener = ChatAppWsContext.getUserRecentESL(chatId, uid);
         if (sourceListener != null) {
@@ -91,7 +92,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
         if (response.contains("Rate limit reached")) {
             msg.setMsg("\n当前请求人数太多，请10s后重试！！！");
         } else {
-            msg.setMsg("\n服务器开小差了，请5s后重试！！！");
+            msg.setMsg("\n服务器开小差了，请5s后重试！！！\n\n反馈QQ:1324459373");
         }
 //        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
         session.sendText(JSON.toJSONString(msg));
