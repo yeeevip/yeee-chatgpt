@@ -79,7 +79,7 @@ public class ChatService {
             return;
         }
 
-        boolean canDo = checkRepeatService.canRepeatDoSendMsg(uid, 8);
+        boolean canDo = checkRepeatService.canRepeatDoSendMsg(uid, 5);
         if (!canDo) {
             ChatAppNoticeKit.sendQuesFastMsg(listener);
             return;
@@ -113,27 +113,25 @@ public class ChatService {
 
     private boolean checkLimit(String uid, String msg, String uKey, WsEventSourceListener listener) {
         Integer count = chatRedisRepository.getULimitCount();
-        boolean needLimit = true;
-        if (count != null && (needLimit = !chatRedisRepository.getULimitExclude(uid, uKey))
+        boolean needLimitCount = true;
+        if (count != null && (needLimitCount = !chatRedisRepository.getULimitExclude(uid, uKey))
                 && Optional.ofNullable(chatRedisRepository.getULimitCountCache(uKey)).orElse(0) >= count) {
             ChatAppNoticeKit.sendUseLimitMsg(listener, count);
             return false;
         }
-        if (needLimit) {
-            String temp = msg.toLowerCase().replaceAll(chatRedisRepository.getReplaceRegex(), "");
-            String presetMsg = chatRedisRepository.getPresetAnswers().get(temp);
-            if (StrUtil.isNotBlank(presetMsg)) {
-                ChatAppNoticeKit.sendPresetMsg(listener, presetMsg);
-                return false;
-            }
-            if (chatRedisRepository.getProhibitKeyword().stream().anyMatch(key -> StrUtil.contains(temp, key))) {
-                ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
-                return false;
-            }
-            if (ChatLocalRepository.containSensWord(temp)) {
-                ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
-                return false;
-            }
+        String temp = msg.toLowerCase().replaceAll(chatRedisRepository.getReplaceRegex(), "");
+        String presetMsg = chatRedisRepository.getPresetAnswers().get(temp);
+        if (StrUtil.isNotBlank(presetMsg)) {
+            ChatAppNoticeKit.sendPresetMsg(listener, presetMsg);
+            return false;
+        }
+        if (chatRedisRepository.getProhibitKeyword().stream().anyMatch(key -> StrUtil.contains(temp, key))) {
+            ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
+            return false;
+        }
+        if (ChatLocalRepository.containSensWord(temp)) {
+            ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
+            return false;
         }
         return true;
     }

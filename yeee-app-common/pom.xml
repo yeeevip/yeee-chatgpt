@@ -16,10 +16,6 @@
             <groupId>vip.yeee.memo</groupId>
             <artifactId>common-wx-ma</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.lionsoul</groupId>
-            <artifactId>jcseg-core</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

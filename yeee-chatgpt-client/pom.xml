@@ -34,6 +34,10 @@
             <groupId>vip.yeee.memo</groupId>
             <artifactId>common-app-auth-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>vip.yeee.memo</groupId>
+            <artifactId>common-jcseg</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

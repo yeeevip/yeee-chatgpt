@@ -5,10 +5,11 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.tokenizer.TokenizerEngine;
 import cn.hutool.extra.tokenizer.Word;
 import com.google.common.collect.Sets;
 import vip.yeee.app.chatgpt.client.model.ChatMessage2;
-import vip.yeee.app.common.config.ADictionaryExtra;
+import vip.yeee.memo.base.web.utils.SpringContextUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,7 +73,7 @@ public class ChatLocalRepository {
             return false;
         }
         Iterator<Word> it;
-        it = ADictionaryExtra.engine.parse(sentence);
+        it = ((TokenizerEngine)SpringContextUtils.getBean(TokenizerEngine.class)).parse(sentence);
         boolean flag = false;
         if(IterUtil.isNotEmpty(it)) {
             while(it.hasNext()) {

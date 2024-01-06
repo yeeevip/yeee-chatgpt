@@ -3,11 +3,12 @@ package vip.yeee.app.chatgpt.client.kit;
 import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.tokenizer.TokenizerEngine;
 import cn.hutool.extra.tokenizer.Word;
 import com.alibaba.fastjson.JSON;
 import vip.yeee.app.chatgpt.client.listener.AbstractStreamListener;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
-import vip.yeee.app.common.config.ADictionaryExtra;
+import vip.yeee.memo.base.web.utils.SpringContextUtils;
 import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ public class ChatAppNoticeKit {
     public static void sendUseLimitMsg(WsEventSourceListener listener, Integer count) {
         String msg = "你好[今日]免费次数已用完，请明日再来吧~~~\n\nTip：请在【手机端】点击右上角···[重新进入小程序]试试\n\n反馈建议QQ:1324459373";
         Iterator<Word> it;
-        it = ADictionaryExtra.engine.parse(msg);
+        it = getTokenizerEngine().parse(msg);
         if(IterUtil.isNotEmpty(it)) {
             while(it.hasNext()) {
                 listener.onMsg(false, "chat", it.next().getText());
@@ -34,7 +35,7 @@ public class ChatAppNoticeKit {
 
     public static void sendQuesFastMsg(WsEventSourceListener listener) {
         Iterator<Word> it;
-        it = ADictionaryExtra.engine.parse("提问太快了，请10s后重试！！！");
+        it = getTokenizerEngine().parse("提问太快了，请6s后重试！！！");
         if(IterUtil.isNotEmpty(it)) {
             while(it.hasNext()) {
                 listener.onMsg(false, "chat", it.next().getText());
@@ -44,7 +45,7 @@ public class ChatAppNoticeKit {
 
     public static void sendPresetMsg(WsEventSourceListener listener, String presetMsg) {
         Iterator<Word> it;
-        it = ADictionaryExtra.engine.parse(presetMsg);
+        it = getTokenizerEngine().parse(presetMsg);
         if(IterUtil.isNotEmpty(it)) {
             while(it.hasNext()) {
                 listener.onMsg(false, "chat", it.next().getText());
@@ -69,5 +70,9 @@ public class ChatAppNoticeKit {
         msg.setMsg("身份认证过期，请重新进入小程序！！！");
         session.sendText(JSON.toJSONString(msg));
         session.close();
+    }
+
+    private static TokenizerEngine getTokenizerEngine() {
+        return ((TokenizerEngine) SpringContextUtils.getBean(TokenizerEngine.class));
     }
 }
