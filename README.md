@@ -21,7 +21,7 @@
 
 ![体验地址](doc/yeee/images/yeee_wp.jpg)
 
-公众号：一页一    ，回复 weso 获取小程序码
+公众号：一页一    ，回复 weso      即可免费使用
 
 ## 快速开始
 
