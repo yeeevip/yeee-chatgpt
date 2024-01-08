@@ -83,6 +83,7 @@ public class ChatLocalRepository {
                 }
                 if (SENSITIVE_LEXICON.contains(text.replaceAll(" ", ""))) {
                     flag = true;
+                    break;
                 }
             }
         }
