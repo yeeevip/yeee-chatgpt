@@ -65,7 +65,7 @@ public class AppJobs {
                 log.info("【LoadSensitiveLexicon2Cache】- 开始");
                 List<String> stringList = FileUtil.readLines(sensitiveLexiconPath, StandardCharsets.UTF_8);
                 stringList.forEach(ChatLocalRepository::addSensWord);
-                log.info("【LoadSensitiveLexicon2Cache】- 结束，耗时：{}", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+                log.info("【LoadSensitiveLexicon2Cache】- 结束，数量：{}，耗时：{}", stringList.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
             } catch (Exception e) {
                 log.warn("【LoadSensitiveLexicon2Cache】- 失败", e);
             }
