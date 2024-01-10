@@ -22,6 +22,7 @@ import vip.yeee.app.chatgpt.client.model.ChatParams;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
 import vip.yeee.app.chatgpt.client.properties.OpenaiApiProperties;
 import vip.yeee.app.common.service.CheckRepeatService;
+import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -65,11 +66,12 @@ public class ChatService {
         return message;
     }
 
-    public void doWsChat(String msg, String chatId, String uid) {
+    public void doWsChat(String msg, String chatId, ApiAuthedUser authedUser) {
 
-        String uKey = chatRedisRepository.getUserKey(uid);
+        String uid = authedUser.getUid();
+        String uKey = authedUser.getOpenid();
 
-        WsEventSourceListener listener = new WsEventSourceListener(chatId, uid, uKey, msg);
+        WsEventSourceListener listener = new WsEventSourceListener(chatId, authedUser, msg);
 
         if (this.handleAdminRequest(msg, listener)) {
             return;

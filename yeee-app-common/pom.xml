@@ -16,6 +16,10 @@
             <groupId>vip.yeee.memo</groupId>
             <artifactId>common-wx-ma</artifactId>
         </dependency>
+        <dependency>
+            <groupId>vip.yeee.memo</groupId>
+            <artifactId>common-wx-mp</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

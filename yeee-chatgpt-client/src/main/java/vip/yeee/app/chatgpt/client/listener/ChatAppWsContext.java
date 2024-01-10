@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import vip.yeee.app.chatgpt.client.constant.ChatGptConstant;
 
+import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,10 @@ public class ChatAppWsContext {
     private final static Map<String, Session> CUR_USER_SESSION_MAP = Maps.newHashMap();
     private final static Map<String, WsEventSourceListener> CUR_USER_RECENT_ESL_MAP = Maps.newHashMap();
 
-    public static void setUserSession(String chatId, String uid, Session session) {
+    public static void setUserSession(String chatId, ApiAuthedUser authedUser, Session session) {
         session.setAttribute(ChatGptConstant.ChatUserID.CHAT_ID, chatId);
-        session.setAttribute(ChatGptConstant.ChatUserID.U_ID, uid);
-        CUR_USER_SESSION_MAP.put(chatId + ":" + uid, session);
+        session.setAttribute(ChatGptConstant.ChatUserID.U_DETAIL, authedUser);
+        CUR_USER_SESSION_MAP.put(chatId + ":" + authedUser.getUid(), session);
     }
 
     public static void removeUserSession(String chatId, String uid) {

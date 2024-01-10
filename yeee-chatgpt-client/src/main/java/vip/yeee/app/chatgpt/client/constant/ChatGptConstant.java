@@ -29,9 +29,9 @@ public class ChatGptConstant {
 
     public interface ChatUserID {
 
-        String U_ID = "uid";
-
         String CHAT_ID = "chatId";
+
+        String U_DETAIL = "uKey";
     }
 
 }

@@ -1,5 +1,5 @@
 <template>
-	<view class="bg" @touchstart="handleTouchStart">
+	<view class="bg" @touchstart="handleTouchStart" @wheel="handleTouchStart">
 		<image src="" mode="scaleToFill" class="bg-img"></image>
 <!-- 		<view class="advertising">
 			<ad unit-id="adunit-94ed6bcc5bb80d7f"></ad>
@@ -204,7 +204,13 @@ export default {
       // 	//设置下方的Menus菜单，才能够让发送给朋友与分享到朋友圈两个按钮可以点击
       // 	menus: ["shareAppMessage", "shareTimeline"]
       // })
-    }
+    } else {
+		let ua = window.navigator.userAgent.toLowerCase()
+		if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+			let head = document.getElementsByTagName('uni-page-head')[0];
+			head.style.display = 'none';
+		}
+	}
 
     const that = this;
     // this.userAvatar = uni.getStorageSync('user-avatar')
@@ -219,7 +225,7 @@ export default {
         }
 
         uni.request({
-          url: vm.baseHttpAddr + '/api/airobot/ws-auth',
+          url: vm.baseHttpAddr + '/api/airobot/ws-auth?jscode=' + vm.chatId,
           method: 'POST',
           success: (res) => {
             if (res.data.code == 200) {
@@ -561,6 +567,9 @@ export default {
       });
     },
 	handleTouchStart () {
+		if (this.isWx) {
+			return
+		}
 		this.isScrolling = true
 	},
 	isJSONString (str) {

@@ -12,6 +12,7 @@ import okhttp3.sse.EventSource;
 import vip.yeee.app.chatgpt.client.domain.local.ChatLocalRepository;
 import vip.yeee.app.chatgpt.client.model.ChatMessage2;
 
+import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 import vip.yeee.memo.common.websocket.netty.bootstrap.Session;
 import java.util.Date;
 import java.util.List;
@@ -34,12 +35,11 @@ public class WsEventSourceListener extends AbstractStreamListener {
 
     private StringBuffer errSendMsg = new StringBuffer();
 
-    public WsEventSourceListener(String chatId, String uid, String uKey, String question) {
+    public WsEventSourceListener(String chatId, ApiAuthedUser authedUser, String question) {
         this.setChatId(chatId);
-        this.setUid(uid);
-        this.setuKey(uKey);
+        this.setAuthedUser(authedUser);
         this.question = question;
-        WsEventSourceListener sourceListener = ChatAppWsContext.getUserRecentESL(chatId, uid);
+        WsEventSourceListener sourceListener = ChatAppWsContext.getUserRecentESL(chatId, authedUser.getUid());
         if (sourceListener != null) {
             sourceListener.clear();
         }
@@ -79,7 +79,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
 
     @Override
     public void onError(Throwable throwable, String response) {
-        Session session = ChatAppWsContext.getUserSession(this.chatId, uid);
+        Session session = ChatAppWsContext.getUserSession(this.chatId, this.authedUser.getUid());
         if (session == null || !session.isOpen()) {
             return;
         }
@@ -118,7 +118,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
 
     public void startThreadSendWsMsg() {
         this.canReply = true;
-        Session session = ChatAppWsContext.getUserSession(chatId, uid);
+        Session session = ChatAppWsContext.getUserSession(chatId, authedUser.getUid());
          new Thread(() -> {
             while (canReply) {
                 String message = null;

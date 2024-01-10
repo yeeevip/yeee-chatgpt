@@ -8,6 +8,7 @@ import com.alicp.jetcache.anno.Cached;
 import com.google.common.collect.Maps;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -98,9 +99,9 @@ public class ChatRedisRepository {
         return StrUtil.isNotBlank(value) ? value : uid;
     }
 
-    public Integer getUserSurplus(String ipAddr, String uKey) {
-        return Math.max(!this.getULimitExclude(ipAddr, uKey)
-                ? this.getULimitCount() - this.getULimitCountCache(uKey) : 1000, 0);
+    public Integer getUserSurplus(ApiAuthedUser authedUser) {
+        return Math.max(!this.getULimitExclude(authedUser.getUid(), authedUser.getOpenid())
+                ? this.getULimitCount() - this.getULimitCountCache(authedUser.getOpenid()) : 1000, 0);
     }
 
     @Cached(cacheType = CacheType.LOCAL, expire = 60)

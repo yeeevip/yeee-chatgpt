@@ -13,6 +13,7 @@ import okhttp3.sse.EventSourceListener;
 import vip.yeee.app.chatgpt.client.model.ChatMessage;
 import vip.yeee.app.chatgpt.client.model.ChatResult;
 import vip.yeee.app.chatgpt.client.model.ChoiceModel;
+import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 
 import java.util.Date;
 import java.util.List;
@@ -26,8 +27,7 @@ public abstract class AbstractStreamListener extends EventSourceListener {
 
     private String gptRole = "";
     protected String chatId = "";
-    protected String uid = "";
-    protected String uKey = "";
+    protected ApiAuthedUser authedUser;
     protected Date startTime;
     protected Date firstRespTime;
     @Getter
@@ -164,20 +164,12 @@ public abstract class AbstractStreamListener extends EventSourceListener {
         this.chatId = chatId;
     }
 
-    public String getUid() {
-        return uid;
+    public ApiAuthedUser getAuthedUser() {
+        return authedUser;
     }
 
-    public String getuKey() {
-        return uKey;
-    }
-
-    public void setuKey(String uKey) {
-        this.uKey = uKey;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setAuthedUser(ApiAuthedUser authedUser) {
+        this.authedUser = authedUser;
     }
 
     public Date getStartTime() {
