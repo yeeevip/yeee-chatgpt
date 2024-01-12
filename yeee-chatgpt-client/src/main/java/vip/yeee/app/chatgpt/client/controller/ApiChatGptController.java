@@ -3,7 +3,9 @@ package vip.yeee.app.chatgpt.client.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import vip.yeee.app.chatgpt.client.biz.ApiChatGptBiz;
+import vip.yeee.app.chatgpt.client.model.vo.ApiAuthedUserVo;
 import vip.yeee.app.chatgpt.client.model.vo.UserAuthVo;
+import vip.yeee.memo.base.model.exception.BizException;
 import vip.yeee.memo.base.model.rest.CommonResult;
 
 import javax.annotation.Resource;
@@ -40,7 +42,13 @@ public class ApiChatGptController {
 
     @PostMapping("/ws-auth")
     public CommonResult<UserAuthVo> wsAuth(String jscode) throws Exception {
-        return CommonResult.success(apiChatGptBiz.wsAuth(jscode));
+        ApiAuthedUserVo userVo = new ApiAuthedUserVo();
+        try {
+            userVo.setJscode(jscode);
+            return CommonResult.success(apiChatGptBiz.wsAuth(userVo));
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 }

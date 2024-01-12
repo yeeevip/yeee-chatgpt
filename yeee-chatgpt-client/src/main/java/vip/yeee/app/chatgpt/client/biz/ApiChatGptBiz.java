@@ -2,6 +2,7 @@ package vip.yeee.app.chatgpt.client.biz;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -20,6 +21,7 @@ import vip.yeee.app.chatgpt.client.domain.redis.ChatRedisRepository;
 import vip.yeee.app.chatgpt.client.kit.ChatAppNoticeKit;
 import vip.yeee.app.chatgpt.client.listener.ChatAppWsContext;
 import vip.yeee.app.chatgpt.client.listener.WsEventSourceListener;
+import vip.yeee.app.chatgpt.client.model.vo.ApiAuthedUserVo;
 import vip.yeee.app.chatgpt.client.model.vo.UserAuthVo;
 import vip.yeee.app.chatgpt.client.service.ChatService;
 import vip.yeee.app.common.service.CommonService;
@@ -79,15 +81,14 @@ public class ApiChatGptBiz {
         return res;
     }
 
-    public UserAuthVo wsAuth(String jscode) throws Exception {
-        ApiAuthedUser userVo = new ApiAuthedUser();
+    public UserAuthVo wsAuth(ApiAuthedUserVo userVo) throws Exception {
+        String jscode = userVo.getJscode();
         String ipAddr = HttpRequestUtils.getIpAddr(SpringContextUtils.getHttpServletRequest());
         String openid = this.getUserOpenId(userVo, jscode);
         if (StrUtil.isBlank(openid)) {
             WxMaJscode2SessionResult sessionInfo = wxMaService.switchoverTo("wx0d6dadb626269833").getUserService().getSessionInfo(jscode);
             openid = sessionInfo.getOpenid();
         }
-        chatRedisRepository.saveUserOpenIdCache(ipAddr, openid);
         userVo.setUid(ipAddr);
         userVo.setOpenid(openid);
         JTokenVo jTokenVo = jwtServerKit.createToken(JSON.toJSONString(userVo));
@@ -198,7 +199,7 @@ public class ApiChatGptBiz {
     @Resource
     private WxMpProperties wxMpProperties;
 
-    private String getUserOpenId(ApiAuthedUser userVo, String jscode) {
+    private String getUserOpenId(ApiAuthedUserVo userVo, String jscode) {
         try {
             WxMpProperties.MpConfig mpConfig = wxMpProperties.getConfigs()
                     .stream()
