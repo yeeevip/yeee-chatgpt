@@ -15,4 +15,6 @@ import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 public class ApiAuthedUserVo extends ApiAuthedUser {
 
     private String jscode;
+
+    private String ip;
 }

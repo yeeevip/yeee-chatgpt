@@ -7,6 +7,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.tokenizer.TokenizerEngine;
 import cn.hutool.extra.tokenizer.Word;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import vip.yeee.app.chatgpt.client.model.ChatMessage2;
 import vip.yeee.memo.base.web.utils.SpringContextUtils;
@@ -68,26 +69,28 @@ public class ChatLocalRepository {
         SENSITIVE_LEXICON.add(word);
     }
 
-    public static boolean containSensWord(String sentence) {
-        if (StrUtil.isBlank(sentence)) {
-            return false;
-        }
-        Iterator<Word> it;
-        it = ((TokenizerEngine)SpringContextUtils.getBean(TokenizerEngine.class)).parse(sentence);
-        boolean flag = false;
-        if(IterUtil.isNotEmpty(it)) {
-            while(it.hasNext()) {
-                String text = it.next().getText();
-                if (StrUtil.isBlank(text) || text.length() == 1) {
-                    continue;
-                }
-                if (SENSITIVE_LEXICON.contains(text.replaceAll(" ", ""))) {
-                    flag = true;
-                    break;
+    public static Object[] containSensWord(String sentence) {
+        Object[] res = new Object[] {false, null};
+        Set<String> words = Sets.newHashSet();
+        if (StrUtil.isNotBlank(sentence)) {
+            Iterator<Word> it;
+            it = ((TokenizerEngine)SpringContextUtils.getBean(TokenizerEngine.class)).parse(sentence);
+            if(IterUtil.isNotEmpty(it)) {
+                while(it.hasNext()) {
+                    String text = it.next().getText();
+                    if (StrUtil.isBlank(text) || text.length() == 1) {
+                        continue;
+                    }
+                    if (SENSITIVE_LEXICON.contains(text.replaceAll(" ", ""))) {
+                        res[0] =true;
+                        words.add(text);
+//                        break;
+                    }
                 }
             }
         }
-        return flag;
+        res[1] = String.join("|", words);
+        return res;
     }
 
 }

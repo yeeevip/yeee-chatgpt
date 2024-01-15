@@ -84,6 +84,7 @@ public class ApiChatGptBiz {
     public UserAuthVo wsAuth(ApiAuthedUserVo userVo) throws Exception {
         String jscode = userVo.getJscode();
         String ipAddr = HttpRequestUtils.getIpAddr(SpringContextUtils.getHttpServletRequest());
+        userVo.setIp(ipAddr);
         String openid = this.getUserOpenId(userVo, jscode);
         if (StrUtil.isBlank(openid)) {
             WxMaJscode2SessionResult sessionInfo = wxMaService.switchoverTo("wx0d6dadb626269833").getUserService().getSessionInfo(jscode);
@@ -95,7 +96,6 @@ public class ApiChatGptBiz {
         UserAuthVo authVo = new UserAuthVo();
         authVo.setAccessToken(jTokenVo.getAccessToken());
         authVo.setOpenid(openid);
-        String uKey = StrUtil.isNotBlank(openid) ? openid : ipAddr;
         authVo.setLimitCount(chatRedisRepository.getUserSurplus(userVo));
         return authVo;
     }
@@ -200,15 +200,16 @@ public class ApiChatGptBiz {
     private WxMpProperties wxMpProperties;
 
     private String getUserOpenId(ApiAuthedUserVo userVo, String jscode) {
+        String openid = null, decText = null;
         try {
             WxMpProperties.MpConfig mpConfig = wxMpProperties.getConfigs()
                     .stream()
                     .filter(c -> Integer.valueOf(20).equals(c.getAppType()))
                     .findFirst()
                     .get();
-            String decryptStr = SecureUtil.aes(SecureUtil.md5(mpConfig.getToken()).substring(0, 16).getBytes()).decryptStr(jscode);
+            decText = SecureUtil.aes(SecureUtil.md5(mpConfig.getToken()).substring(0, 16).getBytes()).decryptStr(jscode);
+            userVo.setJscode(decText);
             this.fillUserVo(userVo);
-            return decryptStr;
         } catch (Exception ignore) {
 
         }

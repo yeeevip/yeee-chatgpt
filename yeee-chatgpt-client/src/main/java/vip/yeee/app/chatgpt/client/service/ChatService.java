@@ -131,7 +131,8 @@ public class ChatService {
             ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
             return false;
         }
-        if (ChatLocalRepository.containSensWord(temp)) {
+        Object[] chkSensWord;
+        if ((Boolean) (chkSensWord = ChatLocalRepository.containSensWord(temp))[0]) {
             ChatAppNoticeKit.sendPresetMsg(listener, Lists.newArrayList(chatRedisRepository.getPresetAnswers().values()).get(0));
             return false;
         }
