@@ -87,8 +87,12 @@ public class ApiChatGptBiz {
         userVo.setIp(ipAddr);
         String openid = this.getUserOpenId(userVo, jscode);
         if (StrUtil.isBlank(openid)) {
-            WxMaJscode2SessionResult sessionInfo = wxMaService.switchoverTo("wx0d6dadb626269833").getUserService().getSessionInfo(jscode);
-            openid = sessionInfo.getOpenid();
+            try {
+                WxMaJscode2SessionResult sessionInfo = wxMaService.switchoverTo("wx0d6dadb626269833").getUserService().getSessionInfo(jscode);
+                openid = sessionInfo.getOpenid();
+            } catch (Exception e) {
+                openid = ipAddr;
+            }
         }
         userVo.setUid(ipAddr);
         userVo.setOpenid(openid);
@@ -120,6 +124,9 @@ public class ApiChatGptBiz {
         }
 
         String uid = authedUser.getUid();
+        if (StrUtil.isBlank(chatId)) {
+            chatId = uid;
+        }
 
         redisCache.recordUserDetail(authedUser.getOpenid(), "ip", uid);
         CommonService commonService = (CommonService) SpringContextUtils.getBean(CommonService.class);

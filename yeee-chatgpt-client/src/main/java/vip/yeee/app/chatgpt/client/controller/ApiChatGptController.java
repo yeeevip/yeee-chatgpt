@@ -47,6 +47,10 @@ public class ApiChatGptController {
             userVo.setJscode(jscode);
             return CommonResult.success(apiChatGptBiz.wsAuth(userVo));
         } catch (Exception e) {
+            if (!(e instanceof BizException)) {
+                log.error("wsAuth error", e);
+                throw new BizException("身份认证失败！\n\n也可以微信搜索公众号：一页一\n\n回复 weso 重新获取您专属链接继续使用哦！");
+            }
             throw e;
         }
     }
