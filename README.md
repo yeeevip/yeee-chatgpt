@@ -52,13 +52,13 @@ yeee-chatgpt
 
 ```
 # 下载yeee-memo工程
-git clone https://github.com/yeeevip/yeee-memo.git
+git clone https://gitee.com/yeeevip/yeee-memo.git
 
 # 打包[通用JavaWeb脚手架]memo-parent
 cd yeee-memo/memo-parent && mvn clean install
 
 # 下载chatgpt项目
-git clone https://github.com/yeeevip/yeee-chatgpt.git
+git clone https://gitee.com/yeeevip/yeee-chatgpt.git
 
 # 修改配置
 cd yeee-chatgpt/yeee-chatgpt-bootstrap/src/main/resources/application-test.yml  修改  openai.chat.[key] | openai.chat.[host]
