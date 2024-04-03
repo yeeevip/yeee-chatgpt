@@ -3,7 +3,7 @@ package vip.yeee.app.chatgpt.client.constant;
 /**
  * description......
  *
- * @author yeeee
+ * @author https://www.yeee.vip
  * @since 2023/4/9 11:55
  */
 public class ChatGptConstant {

@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * description......
  *
- * @author yeeee
+ * @author https://www.yeee.vip
  * @since 2023/4/5 16:55
  */
 public class ChatAppWsContext {

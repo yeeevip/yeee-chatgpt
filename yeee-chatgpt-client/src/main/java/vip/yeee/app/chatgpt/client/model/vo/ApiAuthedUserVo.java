@@ -7,7 +7,7 @@ import vip.yeee.memo.common.appauth.client.model.ApiAuthedUser;
 /**
  * description......
  *
- * @author yeeee
+ * @author https://www.yeee.vip
  * @since 2024/1/12 11:56
  */
 @EqualsAndHashCode(callSuper = true)

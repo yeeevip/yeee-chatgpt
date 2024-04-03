@@ -7,7 +7,7 @@ import vip.yeee.memo.common.appauth.server.model.vo.JTokenVo;
 /**
  * description......
  *
- * @author yeeee
+ * @author https://www.yeee.vip
  * @since 2023/8/10 11:50
  */
 @EqualsAndHashCode(callSuper = true)
