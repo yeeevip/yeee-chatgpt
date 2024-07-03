@@ -81,8 +81,8 @@ cd yeee-chatgpt && mvn clean install && java -jar -Dspring.profiles.active=test 
 - 作者QQ：1324459373
 - 招有经验尽量会全栈的技术，有意向的可以来我们**接单群**
 
-| 微信群                             | QQ群                                                                           |
-|---------------------------------|-------------------------------------------------------------------------------|
-| ![作者微信](doc/yeee/images/yeee_wp.jpg) | ![](doc/yeee/images/yeee-memo-qq.jpg)                                              |
-| 回复：加群，邀您加入群聊                    | <a href="https://qm.qq.com/q/oLSCm1Ksjm" target="_blank">点击加入QQ群：96305921</a> |
+| 微信群                                      | QQ群                                                                                 | 技术接单群                                                                           |
+|------------------------------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| ![作者微信](doc/yeee/images/yeee_wp.jpg)  | ![](doc/yeee/images/yeee-memo-qq.jpg)                                               | ![](doc/yeee/images/yeee_wx.jpg)
+| 回复：加群，邀您加入群聊                   | <a href="https://qm.qq.com/q/oLSCm1Ksjm" target="_blank">点击加入QQ群：96305921</a>  |java、vue、微信小程序接单
 
