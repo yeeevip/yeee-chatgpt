@@ -92,7 +92,7 @@ public class WsEventSourceListener extends AbstractStreamListener {
         if (response.contains("Rate limit reached")) {
             msg.setMsg("\n当前请求人数太多，请10s后重试！！！");
         } else {
-            msg.setMsg("\n服务器开小差了，请5s后重试！！！\n\n反馈QQ:1324459373");
+            msg.setMsg("\n服务器开小差了，请5s后重试！！！\n\n反馈QQ:394230080");
         }
 //        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
         session.sendText(JSON.toJSONString(msg));

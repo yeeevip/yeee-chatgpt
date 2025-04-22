@@ -555,7 +555,7 @@ export default {
     remindWatchAdGainCount() {
       var vm = this;
       uni.showModal({
-        content: '你的免费次数不足，观看广告即可获得免费次数！反馈建议QQ:1324459373',
+        content: '你的免费次数不足，观看广告即可获得免费次数！反馈建议QQ:394230080',
         confirmText: '去观看',
         success: (res) => {
           if (res.confirm && vm.isMobile) {

@@ -58,7 +58,7 @@ public class ChatAppNoticeKit {
         AbstractStreamListener.Message msg = new AbstractStreamListener.Message();
         msg.setMsgId("");
         msg.setKind("chat");
-        msg.setMsg("检测到您的网络不稳定，请重新进入小程序！！！\n\n反馈建议QQ:1324459373");
+        msg.setMsg("检测到您的网络不稳定，请重新进入小程序！！！\n\n反馈建议QQ:394230080");
 //        msg.setCreateTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
         session.sendText(JSON.toJSONString(msg));
         session.close();
