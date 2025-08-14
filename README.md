@@ -48,14 +48,20 @@ yeee-chatgpt
 #### 环境要求
 
 - jdk1.8
+- mysql >= 5.7
 - redis
+- maven >= 3.6
+- node.js >= 18
+
+- 需要远程安装配置请联系，作者QQ：394230080
 
 ```
 # 下载yeee-memo工程
 git clone https://gitee.com/yeeevip/yeee-memo.git
 
 # 打包[通用JavaWeb脚手架]memo-parent
-cd yeee-memo/memo-parent && mvn clean install
+cd yeee-memo/memo-parent 
+mvn clean install
 
 # 下载chatgpt项目
 git clone https://gitee.com/yeeevip/yeee-chatgpt.git
@@ -64,17 +70,13 @@ git clone https://gitee.com/yeeevip/yeee-chatgpt.git
 cd yeee-chatgpt/yeee-chatgpt-bootstrap/src/main/resources/application-test.yml  修改  openai.chat.[key] | openai.chat.[host]
 
 # 运行ChatGPT服务
-cd yeee-chatgpt && mvn clean install && java -jar -Dspring.profiles.active=test yeee-chatgpt-bootstrap/target/yeee-chatgpt-bootstrap-1.0.0-SNAPSHOT.jar
+cd yeee-chatgpt 
+mvn clean install 
+java -jar -Dspring.profiles.active=test yeee-chatgpt-bootstrap/target/yeee-chatgpt-bootstrap-1.0.0-SNAPSHOT.jar
 
 # 运行客户端ui
 建议使用HbuilderX -> 导入app-h5/weso-chatgpt -> 编译运行在微信开发者工具/H5浏览器
 ```
-
-## 其他说明
-
-1. 欢迎提交 [PR](https://www.yeee.vip)
-
-2. 欢迎提交 [issue](https://gitee.com/yeeevip/yeee-blog/issues)，请写清楚遇到问题的原因、开发环境、复显步骤。
 
 ## 交流群
 
